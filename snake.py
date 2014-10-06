@@ -36,6 +36,8 @@ class SnakeGame(object):
     def move(self):
         self.snake_segments.insert(0, (self.snake_segments[0][0] + self.direction[0],
                                       (self.snake_segments[0][1] + self.direction[1])))
+        self.snake_segments.pop(3)
+
     def deathSequence(self):
         a = FSArray(self.height, self.width)
         a[10,10] = red('X')
