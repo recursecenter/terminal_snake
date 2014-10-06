@@ -56,18 +56,30 @@ def main():
         game = SnakeGame(window.height, window.width)
         with Input() as input_generator:
             c = None
+            last_c = '<DOWN>'
             for framenum in itertools.count(0):
                 t0 = time.time()
                 while True:
                     t = time.time()
-                    temp_c = input_generator.send(max(0, t - (t0 + time_per_frame)))
+                    temp_c = input_generator.send(max(0, t - (t0 + time_per_frame)))                    
                     if temp_c is not None:
                         c = temp_c
                     if c is None:
                         pass
                     elif c == '<ESC>':
                         return
-
+                    elif c == '<UP>' and last_c != '<DOWN>':
+                        game.direction = (-1, 0)
+                        last_c = '<UP>'
+                    elif c == '<DOWN>' and last_c != '<UP>':
+                        game.direction = (1, 0)
+                        last_c = '<DOWN>'
+                    elif c == '<LEFT>' and last_c != '<RIGHT>':
+                        game.direction = (0, -1)
+                        last_c = '<LEFT>'
+                    elif c == '<RIGHT>' and last_c != '<LEFT>':
+                        game.direction = (0, 1)
+                        last_c = '<RIGHT>'
                     c = None
                     if time_per_frame < t - t0:
                         break
@@ -79,6 +91,7 @@ def main():
                 game.move()
                 window.render_to_terminal(a)
                 counter.frame()
+                
 
 if __name__ == '__main__':
     main()
