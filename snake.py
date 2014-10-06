@@ -23,14 +23,29 @@ class SnakeGame(object):
         self.width = width
         self.height = height
         self.direction = (1, 0)
-    def render(self):
-        a = FSArray(self.height, self.width)
-        for seg in self.snake_segments:
-            a[seg[0],seg[1]] = blue('X')
-        return a
+    def render(self, isDead):
+        if not isDead:
+            a = FSArray(self.height, self.width)
+            for seg in self.snake_segments:
+                a[seg[0],seg[1]] = blue('X')
+            return a
+        else:
+            a = self.deathSequence()
+            return a
+
     def move(self):
         self.snake_segments.insert(0, (self.snake_segments[0][0] + self.direction[0],
                                       (self.snake_segments[0][1] + self.direction[1])))
+    def deathSequence(self):
+        a = FSArray(self.height, self.width)
+        a[10,10] = red('X')
+        a[10,14] = red('X')
+        a[12, 10] = red('_')
+        a[12, 11] = red('_')
+        a[12, 12] = red('_')
+        a[12, 13] = red('_')
+        a[12, 14] = red('_')
+        return a
 
 def main():
     counter = FrameCounter()
@@ -56,7 +71,7 @@ def main():
                         break
 
                 fps = 'FPS: %.1f' % counter.fps()
-                a = game.render()
+                a = game.render(isDead = False) # insert death boolean
                 a[0:1, 0:len(fps)] = [fps]
 
                 game.move()
